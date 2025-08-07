@@ -77,13 +77,95 @@ const CourseInfo = {
   ];
   
   function getLearnerData(course, ag, submissions) {
-    // here, we would process this data to achieve the desired result.
-    
+    // console.log("Course Info", CourseInfo);
+    // console.log("Assignment Group", AssignmentGroup);
+    // console.log("Learner Submission", LearnerSubmissions);
+
+
+    // const result = [
+    //     {
+    //       id: 125,
+    //       avg: 0.985, // (47 + 150) / (50 + 150)
+    //       1: 0.94, // 47 / 50
+    //       2: 1.0 // 150 / 150
+    //     },
+    //     {
+    //       id: 132,
+    //       avg: 0.82, // (39 + 125) / (50 + 150)
+    //       1: 0.78, // 39 / 50
+    //       2: 0.833 // late: (140 - 15) / 150
+    //     }
+    //   ];
   
-    return result;
+    // return result;
   }
   
   const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   
-  console.log(result);
+  //console.log(result);
   
+// ==============================Thinking Pad =======================================
+// Step 1: get the relevant data and define variables
+    // 1.1. Get the relevant scores for each assignment from LearneSubmissions using assignment_id keywords
+    //student id 125
+    // console.log(LearnerSubmissions[0].submission.score)
+    // console.log(LearnerSubmissions[1].submission.score)
+    //student id 132
+    // console.log(LearnerSubmissions[3].submission.score)
+    // console.log(LearnerSubmissions[4].submission.score)
+   
+        // we can write a function to get these:
+        function getScores (){
+            scores = [];
+            student_id = [];
+            assignment_id = [];
+            for (i = 0; i < LearnerSubmissions.length; i++) {
+            scores.push(LearnerSubmissions[i].submission.score);
+        }
+        return scores;
+         };
+    
+    console.log(getScores());
+
+        //     return score; 
+        // };
+        // console.log(getScores(123, 1));
+        
+        //
+
+        // console.log(LearnerSubmissions[0]);
+        // console.log(LearnerSubmissions[0].submission.score)
+        // console.log(LearnerSubmissions[0].learner_id)
+        
+
+        
+        
+        
+
+    //let avg;
+    // const submissionTime;
+    // const dueDate;
+    // const scores;
+    // const id;
+   // studentId, courseID, Assignment ID, scores, due dates, submission dates
+   // let courseID = CourseInfo.id;
+   //console.log("course ID", courseID);
+
+   // let studentId = LearnerSubmissions[0];
+   // console.log(studentId)
+   // console.log(LearnerSubmissions[4].learner_id)
+   // LearnerSubmissions.forEach(ele => {console.log(ele.learner_id)});
+
+
+// Step 2: create functions to validate edge cases or calculate averages etc
+// function calcAvg (n1, n2) {
+//     let avg = (n1 + n2)/ 2;
+//     return avg;
+//}
+// Step 3: create the objects to be returned
+
+
+//Use for each to get the scores
+// LearnerSubmissions.forEach (function(ele) {
+//     return [ele.learner_id, ele.assignment_id, ele.submission.score]
+// });
