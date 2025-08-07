@@ -106,34 +106,41 @@ const CourseInfo = {
   
 // ==============================Thinking Pad =======================================
 // Step 1: get the relevant data and define variables
-    // 1.1. Get the relevant scores for each assignment from LearneSubmissions using assignment_id keywords
-    //student id 125
-    // console.log(LearnerSubmissions[0].submission.score)
-    // console.log(LearnerSubmissions[1].submission.score)
-    //student id 132
-    // console.log(LearnerSubmissions[3].submission.score)
-    // console.log(LearnerSubmissions[4].submission.score)
-   
-        // we can write a function to get these:
-        function getScores (){
-            scores = [];
-            student_id = [];
-            assignment_id = [];
-            for (i = 0; i < LearnerSubmissions.length; i++) {
-            scores.push(LearnerSubmissions[i].submission.score);
-        }
-        return scores;
-         };
-    
-    console.log(getScores());
+ // 1.1. Get the relevant scores for each assignment from LearneSubmissions using assignment_id keywords
 
-        //     return score; 
-        // };
-        // console.log(getScores(123, 1));
-        
-        //
+// =========== getScores function =======================================       
+function getScores (learnerId, assignmentId){
+    for (i = 0; i < LearnerSubmissions.length; i++) {
+    if (LearnerSubmissions[i].learner_id === learnerId && LearnerSubmissions[i].assignment_id == assignmentId) {
+        let studentScore = LearnerSubmissions[i].submission.score;
+        return studentScore;
+        } 
+    }
+        return null;
+    };
+console.log(getScores(125,1)) ;        
 
-        // console.log(LearnerSubmissions[0]);
+// function getScores (student_id, assignment_id){
+//             scores = [];
+//             student_id = [];
+//             assignment_id = [];
+//             for (i = 0; i < LearnerSubmissions.length; i++) {
+//                 scores.push(LearnerSubmissions[i].submission.score);
+//                 student_id.push(LearnerSubmissions[i].learner_id);
+//                 assignment_id.push(LearnerSubmissions[i].assignment_id);
+//             }
+//         return scores;
+//         return student_id;
+//         return assignment_id;
+//          };
+// =========== End of getScores function =======================================
+
+
+
+
+
+
+        // console.log(LearnerSubmissions);
         // console.log(LearnerSubmissions[0].submission.score)
         // console.log(LearnerSubmissions[0].learner_id)
         
