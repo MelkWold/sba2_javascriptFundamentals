@@ -131,7 +131,7 @@ const CourseInfo = {
     // execute the function to update studentData
     addDueDatesAndPossbiblePoints()
    
-   // Step 3: Now that we have the data that we need, let's calculate the averages after comparing the submission dates and due dates of each assignment for each student
+   // Step 3:  Let compare the submission dates and due dates of each assignment for each student and update studentData
   // check if submission is on time or not
   function addSubmissionStatus() {
       for (let studentId in studentData) {
@@ -146,6 +146,7 @@ const CourseInfo = {
               assigns[i].submissionStatus ="On-Time"; 
              } else {
               assigns[i].submissionStatus ="Late";
+              assigns[i].score -= (assigns[i].score * 0.1) // deducts 10% for late submission
           }
           }
         }
@@ -154,10 +155,25 @@ const CourseInfo = {
   addSubmissionStatus();
 
 
-  // ========================== Displaying the dataset ===============================
+  // Step 4: Now that we have the data that we need, let's calculate the averages
+  for (let learner in studentData) 
+      {
+        let relevantData = studentData[learner];
+        let avg = {}
+            for (i = 0; i < relevantData.assignments.length; i++) 
+                {
+                  avg = (relevantData.assignments[0].score + relevantData.assignments[1].score) / (relevantData.assignments[0].pointsPossible + relevantData.assignments[1].pointsPossible);
+                  studentData[learner].avg = avg;
+                  }
+        console.log(avg);
+      }
+      console.dir(studentData, { depth: null });
+  
+  
+  // ========================== Displaying the dataset ==========================
   // I learned from web search that to display the results better, I can use JSON.stringify or console.dir
      // console.log(JSON.stringify(studentData, null, 2));
-      console.dir(studentData, { depth: null });
+  console.dir(studentData, { depth: null });
         
   
       return result;
@@ -166,32 +182,3 @@ const CourseInfo = {
   const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   
     // ================================END of Document ============================
-
-  // console.log(studentData["125"].assignments)
-
-  // let student1Assignments = studentData["125"].assignments;
-  // let student2Assignments = studentData["132"].assignments;
-  // console.log(student1Assignments)
-
-
-// submission date comparison
-
-
-// calculate average for assignments 1 and 2
-
-// function averageCalculator() {
-
-//   for (i in studentData) {
-//     for (j = 0; j < 2; j++){
-//       console.log(studentData[i].assignments[j])
-//     }
-    
-//   }
-// }
-
-// averageCalculator()
-
-  
-
-
-
