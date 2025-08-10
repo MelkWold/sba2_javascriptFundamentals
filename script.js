@@ -207,5 +207,6 @@ return finalResult(studentData);
 
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+console.log(result);
 
 // ================================END of Document ============================
