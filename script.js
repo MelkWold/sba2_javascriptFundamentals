@@ -77,34 +77,39 @@ const LearnerSubmissions = [
 ];
 
 function getLearnerData(course, ag, submissions) {
-  studentData = {};
-
   const result = [];
+  let studentData = {};
 
   // ==================== Step by step breakdown of the problem ==================
 
   // Step 1: let's loop over the LearnerSubmissions object to obtain the assignment, score and submissionDate data organized by student
 
-  for (let i = 0; i < LearnerSubmissions.length; i++) {
-    let studentId = LearnerSubmissions[i].learner_id;
-    // if the student is not in the database, add it and create an assignments dataset
-    if (!studentData[studentId]) {
-      studentData[studentId] = {
-        studentId: studentId,
-        assignments: [],
-      };
+  function getInitialData(submissions) {
+    for (let i = 0; i < submissions.length; i++) {
+      let studentId = submissions[i].learner_id;
+      // if the student is not in the database, add it and create an assignments dataset
+      if (!studentData[studentId]) {
+        studentData[studentId] = {
+          studentId: studentId,
+          assignments: [],
+        };
+      }
+      // then push the assignmentId, submissionDate and scores from LearnerSubmissions dataset
+      studentData[studentId].assignments.push({
+        assignmentId: submissions[i].assignment_id,
+        submissionDate: new Date(submissions[i].submission.submitted_at), // change the date format from string to Date
+        score: submissions[i].submission.score,
+      });
     }
-    // then push the assignmentId, submissionDate and scores from LearnerSubmissions dataset
-    studentData[studentId].assignments.push({
-      assignmentId: LearnerSubmissions[i].assignment_id,
-      submissionDate: new Date(LearnerSubmissions[i].submission.submitted_at), // change the date format from string to Date
-      score: LearnerSubmissions[i].submission.score,
-    });
+    return studentData;
   }
+
+  // execute the first function
+  getInitialData(submissions);
 
   // Step 2: Loop through the AssignmentGroup dataset and add the dueDate and pointsPossible into the studentData. I will define a function to do this
 
-  function addDueDatesAndPossbiblePoints() {
+  function addDueDatesAndPossbiblePoints(studentData, ag) {
     for (let studentId in studentData) {
       let assignments = studentData[studentId].assignments;
 
@@ -112,13 +117,10 @@ function getLearnerData(course, ag, submissions) {
         let assignmentId = assignments[j].assignmentId;
         let match = false;
 
-        for (let i = 0; i < AssignmentGroup.assignments.length; i++) {
-          if (AssignmentGroup.assignments[i].id === assignmentId) {
-            assignments[j].dueDate = new Date(
-              AssignmentGroup.assignments[i].due_at
-            ); // change the date format from string to Date to make calculations possible
-            assignments[j].pointsPossible =
-              AssignmentGroup.assignments[i].points_possible;
+        for (let i = 0; i < ag.assignments.length; i++) {
+          if (ag.assignments[i].id === assignmentId) {
+            assignments[j].dueDate = new Date(ag.assignments[i].due_at); // change the date format from string to Date to make calculations possible
+            assignments[j].pointsPossible = ag.assignments[i].points_possible;
             match = true;
             break;
           }
@@ -128,13 +130,14 @@ function getLearnerData(course, ag, submissions) {
         }
       }
     }
+    return studentData;
   }
   // execute the function to update studentData
-  addDueDatesAndPossbiblePoints();
+  addDueDatesAndPossbiblePoints(studentData, ag);
 
   // Step 3:  Let compare the submission dates and due dates of each assignment for each student and update studentData
   // check if submission is on time or not and assgns a 10% penalty for late submission
-  function addSubmissionStatus() {
+  function addSubmissionStatus(studentData) {
     for (let studentId in studentData) {
       let assigns = studentData[studentId].assignments;
 
@@ -150,52 +153,58 @@ function getLearnerData(course, ag, submissions) {
         }
       }
     }
+    return studentData;
   }
-
-  addSubmissionStatus();
+  // run the function
+  addSubmissionStatus(studentData);
 
   // Step 4: Now that we have the data that we need, let's calculate the averages
-  for (let learner in studentData) {
-    let relevantData = studentData[learner];
-    let avg = {};
-    let ratio1 = {};
-    let ration2 = {}
-    for (i = 0; i < relevantData.assignments.length; i++) {
-      avg =
-        (relevantData.assignments[0].score +
-          relevantData.assignments[1].score) /
-        (relevantData.assignments[0].pointsPossible +
-          relevantData.assignments[1].pointsPossible);
-      ratio1 = relevantData.assignments[0].score/relevantData.assignments[0].pointsPossible
-      ratio2 = relevantData.assignments[1].score/relevantData.assignments[1].pointsPossible
-      studentData[learner].avg = avg;
-      studentData[learner].ratio1 = ratio1;
-      studentData[learner].ratio2 = ratio2;
+  function averageValues(studentData) {
+    for (let learner in studentData) {
+      let relevantData = studentData[learner];
+      let avg = {};
+      let ratio1 = {};
+      let ratio2 = {};
+      for (i = 0; i < relevantData.assignments.length; i++) {
+        avg =
+          (relevantData.assignments[0].score +
+            relevantData.assignments[1].score) /
+          (relevantData.assignments[0].pointsPossible +
+            relevantData.assignments[1].pointsPossible);
+        ratio1 =
+          relevantData.assignments[0].score /
+          relevantData.assignments[0].pointsPossible;
+        ratio2 =
+          relevantData.assignments[1].score /
+          relevantData.assignments[1].pointsPossible;
+        studentData[learner].avg = avg;
+        studentData[learner].ratio1 = ratio1;
+        studentData[learner].ratio2 = ratio2;
+      }
     }
+    return studentData;
   }
-  // console.dir(studentData, { depth: null });
+averageValues(studentData);
+  
+// Step 5: Return the values to the result object
+  function finalResult(studentData) {
+    for (let studentId in studentData) {
+      let student = studentData[studentId];
 
-  // ========================== Displaying the dataset ==========================
-  // I learned from web search that to display the results better, I can use JSON.stringify or console.dir
-  // console.log(JSON.stringify(studentData, null, 2));
-  // console.dir(studentData, { depth: null });
-
-  // Step 5: Return the values to the result object
-  for (let studentId in studentData) {
-    let student = studentData[studentId];
-
-    result.push(
-      {
+      result.push({
         id: student.studentId,
-        avg: studentData[studentId].assignments.avg,
-        1: studentData[studentId].ratio1,
-        2: studentData[studentId].ratio2
-    });
+        avg: student.avg,
+        1: student.ratio1,
+        2: student.ratio2,
+      });
+    }
+    return result;
   }
 
+return finalResult(studentData);
 
-  return result;
 }
+
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
