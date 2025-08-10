@@ -82,6 +82,8 @@ const CourseInfo = {
     
     const result = []
 
+    // ==================== Step by step breakdown of the problem ==================
+
     // Step 1: let's loop over the LearnerSubmissions object to obtain the assignment, score and submissionDate data organized by student
 
       for (let i = 0; i < LearnerSubmissions.length; i ++) {
@@ -102,44 +104,47 @@ const CourseInfo = {
         });
       }
 
-   // Step 2: Compare the submission dates and due dates of each assignment for each student
+   // Step 2: Loop through the AssignmentGroup dataset and add the dueDate and pointsPossible into the studentData. I will define a function to do this 
+
+   function addDueDatesAndPossbiblePoints() {
+    for (let studentId in studentData){
+      let assignments = studentData[studentId].assignments;
+    
+      for (let j = 0; j < assignments.length; j++) {
+        let assignmentId = assignments[j].assignmentId;
+        let match = false;
+    
+        for (let i = 0; i < AssignmentGroup.assignments.length; i ++) {
+          if (AssignmentGroup.assignments[i].id === assignmentId) {
+            assignments[j].dueDate = AssignmentGroup.assignments[i].due_at;
+            assignments[j].pointsPossible = AssignmentGroup.assignments[i].points_possible;
+            match = true;
+            break
+          }
+        }
+      if (!match) {
+        console.log("The assignment id doesn't exist")
+        }
+      }
+    }
+    };  
+    // execute the function to update studentData
+    addDueDatesAndPossbiblePoints()
+   
+   // Step 3: Compare the submission dates and due dates of each assignment for each student
           
           // dueDate: AssignmentGroup.assignments[0].due_at,
           // pointsPossible: AssignmentGroup.assignments[0].points_possible
 
-  
+  // ========================== Displaying the dataset ===============================
   // I learned from web search that to display the results better, I can use JSON.stringify or console.dir
      // console.log(JSON.stringify(studentData, null, 2));
-  console.dir(studentData, { depth: null });
+      console.dir(studentData, { depth: null });
         
   
       return result;
     };
 
   const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
-
-  // console.log(AssignmentGroup.assignments[0].due_at)
   
-    // ============================================================
-
-
-    // console.log(studentData["125"])
-    
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // ================================END of Document ============================
