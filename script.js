@@ -110,26 +110,32 @@ function getLearnerData(course, ag, submissions) {
   // Step 2: Loop through the AssignmentGroup dataset and add the dueDate and pointsPossible into the studentData. I will define a function to do this
 
   function addDueDatesAndPossbiblePoints(studentData, ag) {
-    for (let studentId in studentData) {
-      let assignments = studentData[studentId].assignments;
-
-      for (let j = 0; j < assignments.length; j++) {
-        let assignmentId = assignments[j].assignmentId;
-        let match = false;
-
-        for (let i = 0; i < ag.assignments.length; i++) {
-          if (ag.assignments[i].id === assignmentId) {
-            assignments[j].dueDate = new Date(ag.assignments[i].due_at); // change the date format from string to Date to make calculations possible
-            assignments[j].pointsPossible = ag.assignments[i].points_possible;
-            match = true;
-            break;
+    try {
+      for (let studentId in studentData) {
+        let assignments = studentData[studentId].assignments;
+  
+        for (let j = 0; j < assignments.length; j++) {
+          let assignmentId = assignments[j].assignmentId;
+          let match = false;
+  
+          for (let i = 0; i < ag.assignments.length; i++) {
+            if (ag.assignments[i].id === assignmentId) {
+              assignments[j].dueDate = new Date(ag.assignments[i].due_at); // change the date format from string to Date to make calculations possible
+              assignments[j].pointsPossible = ag.assignments[i].points_possible;
+              match = true;
+              break;
+            }
+          }
+          if (!match) {
+            console.log("The assignment id doesn't exist");
           }
         }
-        if (!match) {
-          console.log("The assignment id doesn't exist");
-        }
       }
+    } catch (error) {
+      console.error ("Error Message", error);
+      throw error;
     }
+    
     return studentData;
   }
   // execute the function to update studentData
