@@ -98,7 +98,7 @@ const CourseInfo = {
         // then push the assignmentId, submissionDate and scores from LearnerSubmissions dataset
           studentData[studentId].assignments.push ({
           assignmentId: LearnerSubmissions[i].assignment_id,
-          submissionDate: LearnerSubmissions[i].submission.submitted_at,
+          submissionDate: new Date (LearnerSubmissions[i].submission.submitted_at), // change the date format from string to Date 
           score: LearnerSubmissions[i].submission.score,
           
         });
@@ -116,7 +116,7 @@ const CourseInfo = {
     
         for (let i = 0; i < AssignmentGroup.assignments.length; i ++) {
           if (AssignmentGroup.assignments[i].id === assignmentId) {
-            assignments[j].dueDate = AssignmentGroup.assignments[i].due_at;
+            assignments[j].dueDate = new Date (AssignmentGroup.assignments[i].due_at); // change the date format from string to Date 
             assignments[j].pointsPossible = AssignmentGroup.assignments[i].points_possible;
             match = true;
             break
@@ -131,10 +131,28 @@ const CourseInfo = {
     // execute the function to update studentData
     addDueDatesAndPossbiblePoints()
    
-   // Step 3: Compare the submission dates and due dates of each assignment for each student
+   // Step 3: Now that we have the data that we need, let's calculate the averages after comparing the submission dates and due dates of each assignment for each student
+  // check if submission is on time or not
+  function addSubmissionStatus() {
+      for (let studentId in studentData) {
+        let assigns = studentData[studentId].assignments;
+        
           
-          // dueDate: AssignmentGroup.assignments[0].due_at,
-          // pointsPossible: AssignmentGroup.assignments[0].points_possible
+        for (i = 0; i < assigns.length; i++) {  
+          let submissionDate = assigns[i].submissionDate;
+          let dueDate = assigns[i].dueDate;
+
+          if (submissionDate <= dueDate) {
+              assigns[i].submissionStatus ="On-Time"; 
+             } else {
+              assigns[i].submissionStatus ="Late";
+          }
+          }
+        }
+      };
+
+  addSubmissionStatus();
+
 
   // ========================== Displaying the dataset ===============================
   // I learned from web search that to display the results better, I can use JSON.stringify or console.dir
@@ -148,3 +166,32 @@ const CourseInfo = {
   const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   
     // ================================END of Document ============================
+
+  // console.log(studentData["125"].assignments)
+
+  // let student1Assignments = studentData["125"].assignments;
+  // let student2Assignments = studentData["132"].assignments;
+  // console.log(student1Assignments)
+
+
+// submission date comparison
+
+
+// calculate average for assignments 1 and 2
+
+// function averageCalculator() {
+
+//   for (i in studentData) {
+//     for (j = 0; j < 2; j++){
+//       console.log(studentData[i].assignments[j])
+//     }
+    
+//   }
+// }
+
+// averageCalculator()
+
+  
+
+
+
